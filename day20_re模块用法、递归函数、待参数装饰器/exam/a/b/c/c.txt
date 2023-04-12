@@ -1,0 +1,60 @@
+def show_file(path: str):
+    files = os.listdir(path)
+    for name in files:
+        abs_path = os.path.join(path, name)
+        if os.path.isfile(abs_path):
+            print(name)
+        else:
+            show_file(abs_path)
+
+show_file('a')
+def show_file(path: str):
+    files = os.listdir(path)
+    for name in files:
+        abs_path = os.path.join(path, name)
+        if os.path.isfile(abs_path):
+            print(name)
+        else:
+            show_file(abs_path)
+
+show_file('a')
+def show_file(path: str):
+    files = os.listdir(path)
+    for name in files:
+        abs_path = os.path.join(path, name)
+        if os.path.isfile(abs_path):
+            print(name)
+        else:
+            show_file(abs_path)
+
+show_file('a')
+def show_file(path: str):
+    files = os.listdir(path)
+    for name in files:
+        abs_path = os.path.join(path, name)
+        if os.path.isfile(abs_path):
+            print(name)
+        else:
+            show_file(abs_path)
+
+show_file('a')
+def show_file(path: str):
+    files = os.listdir(path)
+    for name in files:
+        abs_path = os.path.join(path, name)
+        if os.path.isfile(abs_path):
+            print(name)
+        else:
+            show_file(abs_path)
+
+show_file('a')
+def show_file(path: str):
+    files = os.listdir(path)
+    for name in files:
+        abs_path = os.path.join(path, name)
+        if os.path.isfile(abs_path):
+            print(name)
+        else:
+            show_file(abs_path)
+
+show_file('a')

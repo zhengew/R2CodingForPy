@@ -1,0 +1,12 @@
+{"name": "alex", "age": 20}
+["zhangsan", "lisi", "wangerma"]
+{"name": "alex", "age": 20}
+["zhangsan", "lisi", "wangerma"]
+{"name": "alex", "age": 20}
+["zhangsan", "lisi", "wangerma"]
+{"name": "alex", "age": 20}
+["zhangsan", "lisi", "wangerma"]
+{"name": "alex", "age": 20}
+["zhangsan", "lisi", "wangerma"]
+{"name": "alex", "age": 20}
+["zhangsan", "lisi", "wangerma"]
