@@ -4,6 +4,9 @@
 #@datatime: 2023/4/12 下午1:10
 
 from maxExam.week.fourth.core.src import run
+from maxExam.week.fourth.libary.serialize_utils.my_json import MyJson
+from maxExam.week.fourth.libary.serialize_utils.my_pickle import MyPickle
+from maxExam.week.fourth.core.user import User
 
 """
 启动程序
