@@ -5,7 +5,7 @@
 import time
 
 from maxExam.week.fourth.libary.encryption_utils import Encryption
-
+from maxExam.week.fourth.libary.serialize_utils import *
 class User(object):
     """
     用户类: 管理员类、学生类、教师类的父类
@@ -80,11 +80,17 @@ class User(object):
 
 if __name__ == '__main__':
     alex = User('alex', '123456', 'male', '2000-04-12', '本科')
-    print(alex.age)
-    print(alex.pwd)
-    print(alex.__dict__)
+    # print(alex.age)
+    # print(alex.pwd)
+    # print(alex.__dict__)
+    #
+    # import sys
+    # print(sys.path)
+    #
+    # print(len(sys.path))
+    obj = serialize('pickle', '../db/user_info')
+    obj.dump(alex)
 
-    import sys
-    print(sys.path)
+    # for i in obj.load():
+    #     print(i)
 
-    print(len(sys.path))

@@ -5,15 +5,16 @@
 import os
 
 
-class Settings(object):
-    # 根目录
-    base_path = os.path.dirname(os.path.dirname(__file__))
-    # 用户注册文件路径
-    user_info = os.path.join(base_path, 'db', 'userinfo')
-    # 课程信息文件路径
-    course_info = os.path.join(base_path, 'db', 'course_info')
+# 根目录
+base_path = os.path.dirname(os.path.dirname(__file__))
+# 用户注册文件路径
+user_info_path= os.path.join(base_path, 'db', 'user_info')
+# 课程信息文件路径
+course_info_path = os.path.join(base_path, 'db', 'course_info')
+# 当前登录人
+login_user_path = os.path.join(base_path, 'db', 'login_info')
 
 if __name__ == '__main__':
-    print(Settings.base_path)
-    print(Settings.user_info)
-    print(Settings.course_info)
+    print(base_path)
+    print(user_info_path)
+    print(course_info_path)

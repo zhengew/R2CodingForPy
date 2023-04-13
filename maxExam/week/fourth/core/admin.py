@@ -19,42 +19,42 @@ class Admin(User):
         创建课程
         :return:
         """
-        pass
+        print('in create_course')
 
     def create_stu_acc(self):
         """
         创建学生账号
         :return:
         """
-        pass
+        print('in create_stu_acc')
 
     def show_courses(self):
         """
         查看所有课程
         :return:
         """
-        pass
+        print('in show_courses')
 
     def show_stu(self):
         """
         查看所有学生
         :return:
         """
-        pass
+        print('in show_stu')
 
     def show_stu_course(self):
         """
         查看所有学生选课情况
         :return:
         """
-        pass
+        print('in show_stu_course')
 
     def quit(self):
         """
         退出系统
         :return:
         """
-        pass
+        print('in quit')
 
 if __name__ == '__main__':
     wusir = Admin('wusir', '123456', 'male', '1998-01-01', '本科')

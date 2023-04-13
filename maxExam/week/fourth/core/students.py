@@ -15,21 +15,21 @@ class Student(User):
         查看所有课程
         :return:
         """
-        pass
+        print('in show_courses')
 
     def select_courses(self):
         """
         选修课程
         :return:
         """
-        pass
+        print('in select_courses')
 
     def show_selected_courses(self):
         """
         查看已选修的课程信息
         :return:
         """
-        pass
+        print('in show_selected_courses')
 
 if __name__ == '__main__':
     yuwenyang = Student('于文洋', '123456', 'male', '1998-01-01', '本科')
