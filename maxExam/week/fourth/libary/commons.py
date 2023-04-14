@@ -7,9 +7,9 @@ from maxExam.week.fourth.libary.encryption_utils import Encryption
 from maxExam.week.fourth.libary.serialize_utils.serialize_control import serialize
 from maxExam.week.fourth.libary.serialize_utils.my_json import MyJson
 from maxExam.week.fourth.libary.serialize_utils.my_pickle import MyPickle
-
-from maxExam.week.fourth.conf.settings import user_info_path, login_user_path
-
+from maxExam.week.fourth.core.course import Course
+from maxExam.week.fourth.conf.settings import user_info_path, course_info_path
+from maxExam.week.fourth.core.students import Student
 
 def login():
     users_dict = get_all_user(user_info_path)
@@ -32,15 +32,30 @@ def get_all_user(path:str):
         users_dict[user.name] = {"pwd": user.pwd, 'identity': user.identity}
     return users_dict
 
+def get_all_course(path: str):
+    """
+    课程信息
+    :param path:
+    :return: 返回课程信息字典 {'python22期': {'price': '19800.00', 'period': '6 month', 'teacher': '景女神', 'begin_time': '2023-03-01', 'end_time': '2023-09-30'}}
+    """
+    course_dict = {}
+    obj = serialize('pickle', path)
+    for course in obj.load():
+        course_dict[course.cname] = {"price": course.price, 'period': course.period, 'teacher': course.teacher, 'begin_time': course.begin_time, 'end_time': course.end_time}
+    return course_dict
+
 
 if __name__ == '__main__':
     from maxExam.week.fourth.core.user import User
     d1 = {'name': 'alex', 'age': 10}
     obj = serialize('pickle', user_info_path)
     print([i.__dict__ for i in obj.load()])
-    ret = login()
-    if ret:
-        print('登录成功～')
-        print(ret)
-    else:
-        print('登录失败～')
+    # ret = login()
+    # if ret:
+    #     print('登录成功～')
+    #     print(ret)
+    # else:
+    #     print('登录失败～')
+
+    c = get_all_course(course_info_path)
+    print(c)

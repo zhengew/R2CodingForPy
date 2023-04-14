@@ -2,6 +2,7 @@
 #@author: erwei.zheng
 #@file: students.py
 #@datatime: 2023/4/12 下午1:14
+import sys
 
 from maxExam.week.fourth.core.user import User
 
@@ -46,7 +47,7 @@ class Student(User):
         退出系统
         :return:
         """
-        print('in quit')
+        sys.exit()
 
 if __name__ == '__main__':
     yuwenyang = Student('于文洋', '123456', 'male', '1998-01-01', '本科')

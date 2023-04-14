@@ -19,13 +19,18 @@ def run():
         print(login_user) # {'login_name': 'alex', 'identity': '1'} {'login_name': 'wusir', 'identity': '0'}
         if login_user:
             clas_obj = Admin if login_user['identity'] == '0' else Student
-            for id, command in enumerate(clas_obj.command_list(), 1):
-                print(f"{id}: {command[0]}")
-        option = input('请选择:')
-        if hasattr(clas_obj, clas_obj.command_list()[int(option)-1][1]):
-            ret = getattr(clas_obj, clas_obj.command_list()[int(option)-1][1])
-            if callable(ret):
-                ret()
+            ident = '管理员' if login_user['identity'] == '0' else ''
+            print(f"欢迎{ident}{login_user['login_name']}进入选课系统～")
+            while True:
+                for id, command in enumerate(clas_obj.command_list(), 1):
+                    print(f"{id}: {command[0]}")
+                option = input('请选择:')
+                if hasattr(clas_obj, clas_obj.command_list()[int(option)-1][1]):
+                    ret = getattr(clas_obj, clas_obj.command_list()[int(option)-1][1])
+                    if callable(ret):
+                        ret()
+        else:
+            print("用户名或密码错误～")
 
 if __name__ == '__main__':
     run()
