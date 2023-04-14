@@ -7,15 +7,20 @@ from maxExam.week.fourth.libary.encryption_utils import Encryption
 from maxExam.week.fourth.libary.serialize_utils.serialize_control import serialize
 from maxExam.week.fourth.libary.serialize_utils.my_json import MyJson
 from maxExam.week.fourth.libary.serialize_utils.my_pickle import MyPickle
-from maxExam.week.fourth.core.course import Course
-from maxExam.week.fourth.conf.settings import user_info_path, course_info_path
-from maxExam.week.fourth.core.students import Student
+from maxExam.week.fourth.conf.settings import user_info_path, course_info_path, login_user_path
+
 
 def login():
+    """
+    登陆认证
+    保存当前登陆用户到文件中
+    """
     users_dict = get_all_user(user_info_path)
     login_name = input("请输入用户名: ").strip()
     login_pwd = input("请用输入密码: ").strip()
     if login_name in users_dict and Encryption.get_md5(login_name, login_pwd) == users_dict[login_name]['pwd']:
+        obj = serialize('json', login_user_path)
+        obj.dump({'login_name': login_name, 'status': True})
         return {'login_name': login_name, 'identity': users_dict[login_name]['identity']}
     return False
 
@@ -29,7 +34,7 @@ def get_all_user(path:str):
     users_dict = {}
     obj = serialize('pickle', path)
     for user in obj.load():
-        users_dict[user.name] = {"pwd": user.pwd, 'identity': user.identity}
+        users_dict[user.name] = {"pwd": user.pwd, "sex": user.sex, "birth": user.birth, "education": user.education, "identity": user.identity}
     return users_dict
 
 def get_all_course(path: str):
@@ -59,3 +64,6 @@ if __name__ == '__main__':
 
     c = get_all_course(course_info_path)
     print(c)
+
+    obj = serialize('json', login_user_path)
+    print(next(obj.load()))

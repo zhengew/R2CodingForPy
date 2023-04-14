@@ -114,5 +114,8 @@ if __name__ == '__main__':
     for id, command in enumerate(Admin.command_list(), 1):
         print(id, command[0])
 
-    wusir.create_course('python22期')
+    obj = serialize('pickle', course_info_path)
+    python = Course('python', 19800.00, '6 month', 'alex', '2023-01-01', '2023-07-31')
+    print(python)
+    obj.dump(python)
 

@@ -8,7 +8,7 @@ from maxExam.week.fourth.libary.serialize_utils.serialize import Serialize
 class MyJson(Serialize):
     def dump(self, obj):
         """json序列化"""
-        with open(self.path, mode='at') as f:
+        with open(self.path, mode='wt') as f:
             f.write(json.dumps(obj) + "\n")
 
     def load(self):
