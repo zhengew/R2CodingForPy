@@ -20,8 +20,8 @@ def login():
     login_name = input("请输入用户名: ").strip()
     login_pwd = input("请用输入密码: ").strip()
     if login_name in users_dict and Encryption.get_md5(login_name, login_pwd) == users_dict[login_name]['pwd']:
-        obj = serialize('json', login_user_path)
-        obj.dump({'login_name': login_name, 'status': True})
+        user_obj = serialize('json', login_user_path)
+        user_obj.dump({'login_name': login_name, 'status': True})
         return {'login_name': login_name, 'identity': users_dict[login_name]['identity']}
     return False
 
