@@ -21,3 +21,5 @@ class Course(object):
 if __name__ == '__main__':
     python = Course('python', 19800.00, '6 month', 'alex', '2023-01-01', '2023-07-31')
     print(python)
+
+

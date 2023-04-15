@@ -2,7 +2,7 @@
 # @author: erwei.zheng
 # @file: my_pickle.py
 # @datatime: 2023/4/13 19:54
-
+import os
 import pickle
 from maxExam.week.fourth.libary.serialize_utils.serialize import Serialize
 class MyPickle(Serialize):

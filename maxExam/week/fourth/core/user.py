@@ -3,14 +3,13 @@
 #@file: user.py
 #@datatime: 2023/4/12 下午1:18
 import time
-
+import sys
 from maxExam.week.fourth.libary.encryption_utils import Encryption
 from maxExam.week.fourth.libary.serialize_utils.serialize_control import serialize
 from maxExam.week.fourth.libary.serialize_utils.my_json import MyJson
 from maxExam.week.fourth.libary.serialize_utils.my_pickle import MyPickle
-
-
-
+from maxExam.week.fourth.libary.commons import update_login_status, get_all_course
+from maxExam.week.fourth.conf.settings import course_info_path
 
 class User(object):
     """
@@ -82,13 +81,26 @@ class User(object):
         """
         self.__pwd = new_password
 
-
+    @classmethod
+    def show_courses(cls):
+        """
+        查看所有课程
+        :return:
+        """
+        course_dict = get_all_course(course_info_path)
+        for cname in course_dict:
+            print(cname, course_dict[cname])
+    @classmethod
+    def quit(cls):
+        """
+        退出系统
+        :return:
+        """
+        update_login_status()
+        sys.exit()
 
 if __name__ == '__main__':
-    wusir = User('wusir', '123456', 'male', '2000-04-12', '本科')
-    wusir.identity = '0'
-    obj = serialize('pickle', '../db/user_info')
-    obj.dump(wusir)
+    pass
 
     # for i in obj.load():
     #     print(i)

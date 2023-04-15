@@ -5,11 +5,11 @@
 import sys
 from maxExam.week.fourth.core.user import User
 from maxExam.week.fourth.core.course import Course
-from maxExam.week.fourth.conf.settings import course_info_path, stu_course_info, user_info_path
+from maxExam.week.fourth.conf.settings import course_info_path, user_info_path
 from maxExam.week.fourth.libary.serialize_utils.serialize_control import serialize
 from maxExam.week.fourth.libary.serialize_utils.my_json import MyJson
 from maxExam.week.fourth.libary.serialize_utils.my_pickle import MyPickle
-from maxExam.week.fourth.libary.commons import get_all_course, get_all_user
+from maxExam.week.fourth.libary.commons import get_all_course, get_all_user, get_all_stu
 from maxExam.week.fourth.core.students import Student
 
 class Admin(User):
@@ -48,7 +48,6 @@ class Admin(User):
         obj = serialize('pickle', course_info_path)
         obj.dump(cname)
 
-
     @classmethod
     def create_stu_acc(cls):
         """
@@ -65,19 +64,9 @@ class Admin(User):
         sex = input('性别: ')
         birth = input('出生日期: ')
         education = input('学历: ')
-        sname = User(sname, pwd, sex, birth, education)
+        sname = Student(sname, pwd, sex, birth, education)
         obj = serialize('pickle', user_info_path)
         obj.dump(sname)
-
-    @classmethod
-    def show_courses(cls):
-        """
-        查看所有课程
-        :return:
-        """
-        course_dict = get_all_course(course_info_path)
-        for cname in course_dict:
-            print(cname, course_dict[cname])
 
     @classmethod
     def show_stu(cls):
@@ -97,25 +86,21 @@ class Admin(User):
         :return:
         """
         print('in show_stu_course')
-
-    @classmethod
-    def quit(cls):
-        """
-        退出系统
-        :return:
-        """
-        sys.exit()
+        stu_dict = get_all_stu(user_info_path)
+        for id, stu in enumerate(stu_dict, 1):
+            print(f"{id}: {stu}, 已选课程 {[course.cname for course in stu_dict[stu]['major_course']]}")
 
 if __name__ == '__main__':
     wusir = Admin('wusir', '123456', 'male', '1998-01-01', '本科')
     print(wusir)
+    wusir.identity = '0'
+    obj = serialize('pickle', '../db/user_info')
+    obj.dump(wusir)
 
     print(type(Admin.command_list()))
     for id, command in enumerate(Admin.command_list(), 1):
         print(id, command[0])
 
-    obj = serialize('pickle', course_info_path)
-    python = Course('python', 19800.00, '6 month', 'alex', '2023-01-01', '2023-07-31')
-    print(python)
-    obj.dump(python)
+    for u in obj.load():
+        print(u.__dict__)
 
