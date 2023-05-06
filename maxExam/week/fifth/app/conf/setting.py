@@ -6,4 +6,4 @@
 class ConfingHandler:
 
     # 服务端IP
-    server_addr = ('127.0.0.1', 9001)
+    server_addr = ('127.0.0.1', 9002)

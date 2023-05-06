@@ -8,21 +8,18 @@ FTP核心逻辑
 """
 
 import socketserver
+from maxExam.week.fifth.transmit.conf.setting import ConfingHandler
 
 class TransmitServer(socketserver.BaseRequestHandler):
     """
     FTP服务端程序入口
     """
-
-    # def __init__(self):
-    #     self.login_status = {'login_user':None, 'status': False} # 保存用户登录状态
-    #     super().__init__()
-
     def handle(self):
         """
-        主要逻辑
+        @:param: login_status 当前登陆用户状态
         :return:
         """
+        self.login_status = {'login_user': None, 'status': False}
         conn = self.request
         print(conn)
         while True:
@@ -38,7 +35,7 @@ def run():
     启动服务
     :return:
     """
-    server = socketserver.ThreadingTCPServer(('127.0.0.1', 9001), TransmitServer)
+    server = socketserver.ThreadingTCPServer(ConfingHandler.server_addr, TransmitServer)
     server.serve_forever()
 
 if __name__ == '__main__':
