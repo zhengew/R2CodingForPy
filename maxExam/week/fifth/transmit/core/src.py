@@ -14,6 +14,11 @@ class TransmitServer(socketserver.BaseRequestHandler):
     """
     FTP服务端程序入口
     """
+    __options = [('登陆', 'login'), ('注册', 'register'), ('退出', 'exit'),
+                 ('上一级目录', 'upper_dir'), ('下一级目录', 'lower_dir'), ('新建目录', 'make_dir'),
+                 ('查看当前目录', 'show_dir'), ('上传文件', 'upload'), ('下载文件', 'download'),
+                 ('退出', 'exit')]
+
     def handle(self):
         """
         @:param: login_status 当前登陆用户状态
