@@ -6,6 +6,8 @@
 import os
 
 class ConfingHandler:
+    # 系统标识
+    os_type = os.name # posix -> linux/mac os, nt -> windows
 
     # 服务端IP
     server_addr = ('127.0.0.1', 9002)
@@ -18,19 +20,20 @@ class ConfingHandler:
     # 用户信息
     users_path = os.path.join(base_path, 'db', 'users')
 
-    # 服务端文件根目录
-    files_home = os.path.join(base_path, 'db', 'home' + __sep)
-
     # 保存服务端文件的md5值、文件大小、文件名信息
     files_md5 = os.path.join(base_path, 'db', 'files_md5')
 
-    # 服务端私钥
+    # 服务端公钥
     public_key = 'transmit'
 
     # 服务端私钥
     private_key = 'transmit_server'
 
+    # 服务端文件根目录
+    home_path = r'/Users/erwei.zheng/Downloads/home/' if os_type == 'posix' else r'D:\\home\\'
+
 if __name__ == '__main__':
     print(ConfingHandler.base_path)
     print(ConfingHandler.files_home)
     print(ConfingHandler.files_md5)
+    print(ConfingHandler.osname)

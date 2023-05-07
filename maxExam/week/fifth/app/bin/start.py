@@ -6,3 +6,11 @@
 """
 客户端程序入口
 """
+
+from maxExam.week.fifth.app.core.src import run
+
+def start():
+    run()
+
+if __name__ == '__main__':
+    start()

@@ -6,11 +6,14 @@
 """
 程序入口
 """
-
-
 from maxExam.week.fifth.transmit.core.src import run
 
-
+def main():
+    """
+    启动服务端
+    :return:
+    """
+    run()
 
 if __name__ == '__main__':
-    run()
+    main()
