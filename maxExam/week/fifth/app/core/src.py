@@ -11,6 +11,7 @@ import socket
 import os
 import struct
 import re
+import hashlib
 from maxExam.week.fifth.app.conf.setting import ConfingHandler
 from maxExam.week.fifth.app.lib.serializeUtils import SerializeUtils
 from maxExam.week.fifth.app.lib.common import Common
@@ -171,7 +172,8 @@ class TransmitClient(object):
     def upload(self):
         """
         上传文件
-        先完成最普通的上传逻辑
+        断点续传：
+        向服务端发送 文件名、文件大小、分片发送(根据规则动态发送每片的大小)
         :upload_json:{'filename':xxx, 'size':xxx}
         :status_code: 205-上传成功, 206-上传失败
         :return:
@@ -186,20 +188,42 @@ class TransmitClient(object):
         filename = os.path.basename(upload_file)
         filesize = os.path.getsize(upload_file)
         upload_json = {'filename': filename, 'size': filesize}
+        logging.debug('客户端要发送的文件信息:%s' %upload_json)
         self.send_operation(upload_json)
+        md5 = hashlib.md5()  # 计算文件md5值
+        sended_size = 0 # 客户端已发送的文件大小
         with open(upload_file, mode='rb') as f:
             while filesize > 0:
-                content = f.read(1024)
+                content = f.read(2048)
                 filesize -= len(content)
+                sended_size += len(content)
                 self.sk.send(content)
-                logging.debug('文件上传进度:%s' %filesize)
-
-        print('文件上传完毕~')
+                Common.processBar(sended_size, os.path.getsize(upload_file))
+                md5.update(content)
+                # logging.debug('文件上传进度:%s' %filesize)
+        # 向服务端发送md5值，如果md5相同，则上传成功，不同则上传失败
+        md5_value = md5.hexdigest()
+        file_md5_json = {'filename': filename, 'md5': md5_value}
+        self.send_operation(file_md5_json)
+        logging.debug('客户端发送文件完毕:%s' % file_md5_json)
+        # 接收服务端响应
+        status_code = self.recv_operation_status()['status_code']
+        if status_code == '205':
+            print('文件一致性校验通过，文件上传成功:%s' % filename)
+        elif status_code == '206':
+            print('文件一致性校验失败，文件上传失败:%s' % filename)
 
 
     def download(self):
-        """下载文件"""
-        print('in download')
+        """
+        下载文件
+        接收服务端发送的当前目录可下载文件
+        向服务端发送选择的下载文件信息
+        接收服务端传输的文件
+        校验文件一致性
+        :return:
+        """
+
 
     def send_operation(self, operation):
         """

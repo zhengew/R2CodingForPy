@@ -16,3 +16,6 @@ class ConfingHandler:
 
     # 服务端文件根目录
     home_path = r'/Users/erwei.zheng/Downloads/home/' if os_type == 'posix' else r'D:\\home\\'
+
+    # 文件断点续传分片大小 10M
+    part_size = 1024 * 1024 * 1024 * 10

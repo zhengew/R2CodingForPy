@@ -6,6 +6,7 @@
 import hashlib
 import hmac
 import os
+import sys
 from maxExam.week.fifth.transmit.lib.serializeUtils import SerializeUtils
 from maxExam.week.fifth.transmit.conf.setting import ConfingHandler
 class Common(object):
@@ -53,6 +54,23 @@ class Common(object):
         :return:
         """
         return os.path.join(ConfingHandler.home_path, login_user)
+
+    @staticmethod
+    def processBar(num, total):
+        """
+        上传下载进度条
+        :param num:
+        :param total:
+        :return:
+        """
+        rate = num / total
+        rate_num = int(rate * 100)
+        if rate_num == 100:
+            r = '\r%s>%d%%\n' % ('=' * rate_num, rate_num,)
+        else:
+            r = '\r%s>%d%%' % ('=' * rate_num, rate_num,)
+        sys.stdout.write(r)
+        sys.stdout.flush
 
 
 if __name__ == '__main__':

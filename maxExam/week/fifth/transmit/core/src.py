@@ -10,6 +10,9 @@ import logging
 import socketserver
 import struct
 import os
+import hashlib
+import time
+
 from maxExam.week.fifth.transmit.conf.setting import ConfingHandler
 from maxExam.week.fifth.transmit.lib.serializeUtils import SerializeUtils
 from maxExam.week.fifth.transmit.lib.common import Common
@@ -208,23 +211,38 @@ class TransmitServer(socketserver.BaseRequestHandler):
         """
         # 接收客户端文件上传请求json
         upload_json = self.recv_operation(conn)
-        filename = upload_json['filename']
         filesize = upload_json['size']
         upload_file_abspath = os.path.join(self.curr_path, upload_json['filename'])
-
+        md5 = hashlib.md5()  # 计算文件md5值
         # 接收文件
+        received_size = 0 # 服务端已接收的文件大小
         with open(upload_file_abspath, mode='wb') as f:
             while filesize > 0:
-                content = conn.recv(1024)
+                left_size = 2048 if filesize > 2048 else filesize # 避免与接收md5粘包
+                content = conn.recv(left_size)
                 filesize -= len(content)
+                received_size += len(content)
                 f.write(content)
-                logging.debug('文件上传进度:%s' % filesize)
-        print('文件上传完毕～')
-
+                md5.update(content)
+                logging.debug('文件上传进度:%s' % received_size)
+        md5_value = md5.hexdigest()
+        # 接收客户端发送的md5值并与服务端比较
+        time.sleep(1)
+        file_md5_json = self.recv_operation(conn)
+        self.operation_status['status_code'] = '205' if md5_value == file_md5_json['md5'] else '206'
+        self.send_operation_status(conn, self.operation_status)
+        logging.debug('服务端接收文件完毕:%s' % file_md5_json)
 
     def download(self, conn):
-        """下载文件"""
-        print('in download')
+        """
+        下载文件
+        向客户端发送当前目录下的可下载文件
+        接收客户端选择的下载文件信息
+        向客户端传输文件
+        校验文件一致性
+        :param conn:
+        :return:
+        """
 
     def recv_operation(self, conn):
         """
@@ -254,6 +272,8 @@ def run():
     """
     server = socketserver.ThreadingTCPServer(ConfingHandler.server_addr, TransmitServer)
     server.serve_forever()
+
+
 
 if __name__ == '__main__':
     run()
