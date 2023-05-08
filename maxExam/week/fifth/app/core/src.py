@@ -169,8 +169,33 @@ class TransmitClient(object):
             print('当前目录:%s, 是空文件夹～' % self.curr_path)
 
     def upload(self):
-        """上传文件"""
-        print('in upload')
+        """
+        上传文件
+        先完成最普通的上传逻辑
+        :upload_json:{'filename':xxx, 'size':xxx}
+        :status_code: 205-上传成功, 206-上传失败
+        :return:
+        """
+        while True:
+            upload_file = input('请输入要上传的文件路径:').strip()
+            if os.path.exists(upload_file) and os.path.isfile(upload_file) and os.path.getsize(upload_file) != 0:
+               break
+            else:
+                print('您输入的路径不存在或是一个文件夹路径或者是一个空文件:[%s]' %upload_file)
+        # 发送文件上传请求json
+        filename = os.path.basename(upload_file)
+        filesize = os.path.getsize(upload_file)
+        upload_json = {'filename': filename, 'size': filesize}
+        self.send_operation(upload_json)
+        with open(upload_file, mode='rb') as f:
+            while filesize > 0:
+                content = f.read(1024)
+                filesize -= len(content)
+                self.sk.send(content)
+                logging.debug('文件上传进度:%s' %filesize)
+
+        print('文件上传完毕~')
+
 
     def download(self):
         """下载文件"""

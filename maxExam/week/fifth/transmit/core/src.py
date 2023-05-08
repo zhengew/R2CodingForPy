@@ -198,8 +198,29 @@ class TransmitServer(socketserver.BaseRequestHandler):
         self.send_operation_status(conn, dirs)
 
     def upload(self, conn):
-        """上传文件"""
-        print('in upload')
+        """
+        上传文件
+        需要判断文件一致性；是否存在同名文件；如果同名文件需判断是否为同一个文件
+        :upload_json:{'filename':xxx, 'size': xxx}
+        :status_code: 205-上传成功， 206-上传失败
+        :param conn:
+        :return:
+        """
+        # 接收客户端文件上传请求json
+        upload_json = self.recv_operation(conn)
+        filename = upload_json['filename']
+        filesize = upload_json['size']
+        upload_file_abspath = os.path.join(self.curr_path, upload_json['filename'])
+
+        # 接收文件
+        with open(upload_file_abspath, mode='wb') as f:
+            while filesize > 0:
+                content = conn.recv(1024)
+                filesize -= len(content)
+                f.write(content)
+                logging.debug('文件上传进度:%s' % filesize)
+        print('文件上传完毕～')
+
 
     def download(self, conn):
         """下载文件"""
