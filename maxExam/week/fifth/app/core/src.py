@@ -225,6 +225,11 @@ class TransmitClient(object):
         """
         # 接收服务端当前路径的可下载文件
         download_files = self.recv_operation_status()
+        # 判断服务端当前目录是否有可下载的文件
+        if download_files['status_code'] == '208':
+            logging.debug('当前目录:%s, 无可下载的文件：%s' %(self.curr_path, download_files))
+            print('当前目录无可下载的文件~')
+            return
         for id, file in enumerate(download_files['data'], 1):
             print('%s: %s' % (id, file))
         # 校验输入合法性
@@ -262,7 +267,8 @@ class TransmitClient(object):
                 received_size += len(content)
                 f.write(content)
                 md5.update(content)
-                logging.debug('文件下载进度:%s' % received_size)
+                Common.processBar(received_size, download_json['size'])
+                # logging.debug('文件下载进度:%s' % received_size)
         md5_value = md5.hexdigest()
         # 向服务端发送md5值，如果md5相同，则下载成功，不同则下载失败
         md5_value = md5.hexdigest()

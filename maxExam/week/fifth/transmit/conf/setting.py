@@ -30,7 +30,9 @@ class ConfingHandler:
     private_key = 'transmit_server'
 
     # 服务端文件根目录
-    home_path = r'/Users/erwei.zheng/Downloads/home/' if os_type == 'posix' else r'D:\\home\\'
+    # '/Users/erwei.zheng/Downloads/home/'
+    # '/home/zew/Downloads/home'
+    home_path = r'/home/zew/Downloads/home/' if os_type == 'posix' else r'D:\\home\\'
 
 if __name__ == '__main__':
     print(ConfingHandler.base_path)

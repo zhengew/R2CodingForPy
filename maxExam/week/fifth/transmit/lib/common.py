@@ -91,9 +91,8 @@ class Common(object):
         :return:
         """
         abspath = os.path.join(basepath, subpath)
-        # 如果是文件夹，需要加上分隔符
-        # return abspath if os.path.isfile(abspath) else (abspath + os.sep)
         return abspath
+
 if __name__ == '__main__':
     ret = Common.get_pwd_md5('test1', '123456')
     print(ret, len(ret))

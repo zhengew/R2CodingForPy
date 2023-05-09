@@ -246,7 +246,14 @@ class TransmitServer(socketserver.BaseRequestHandler):
         """
         # 向客户端发送当前目录下的可下载文件
         curr_path_files = Common.get_curr_path_files(self.curr_path)
-        download_files= {'data': curr_path_files}
+        # 判断当前目录是否有可下载的文件
+        if not curr_path_files:
+            self.operation_status['status_code'] = '208'
+            download_files = {'data': curr_path_files, 'status_code': self.operation_status['status_code']}
+            self.send_operation_status(conn, download_files)
+            logging.debug('当前目录:%s,无可下载的文件: %s' %(self.curr_path, curr_path_files))
+            return
+        download_files= {'data': curr_path_files, 'status_code': self.operation_status['status_code']}
         self.send_operation_status(conn, download_files)
         # 接收客户端文件下载请求
         download_file_json = self.recv_operation(conn)

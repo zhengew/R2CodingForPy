@@ -2,3 +2,6 @@
 # @author: erwei.zheng
 # @file: __init__.py
 # @datatime: 2023/4/26 下午3:46
+import os
+
+path = r'/home/zew/Downloads/home/home'
