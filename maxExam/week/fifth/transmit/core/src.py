@@ -212,7 +212,8 @@ class TransmitServer(socketserver.BaseRequestHandler):
         # 接收客户端文件上传请求json
         upload_json = self.recv_operation(conn)
         filesize = upload_json['size']
-        upload_file_abspath = os.path.join(self.curr_path, upload_json['filename'])
+        # upload_file_abspath = os.path.join(self.curr_path, upload_json['filename'])
+        upload_file_abspath = Common.get_abspath(self.curr_path, upload_json['filename'])
         md5 = hashlib.md5()  # 计算文件md5值
         # 接收文件
         received_size = 0 # 服务端已接收的文件大小
@@ -227,7 +228,6 @@ class TransmitServer(socketserver.BaseRequestHandler):
                 logging.debug('文件上传进度:%s' % received_size)
         md5_value = md5.hexdigest()
         # 接收客户端发送的md5值并与服务端比较
-        time.sleep(1)
         file_md5_json = self.recv_operation(conn)
         self.operation_status['status_code'] = '205' if md5_value == file_md5_json['md5'] else '206'
         self.send_operation_status(conn, self.operation_status)
@@ -240,9 +240,43 @@ class TransmitServer(socketserver.BaseRequestHandler):
         接收客户端选择的下载文件信息
         向客户端传输文件
         校验文件一致性
+        :status_code: 207-下载成功, 208-下载失败
         :param conn:
         :return:
         """
+        # 向客户端发送当前目录下的可下载文件
+        curr_path_files = Common.get_curr_path_files(self.curr_path)
+        download_files= {'data': curr_path_files}
+        self.send_operation_status(conn, download_files)
+        # 接收客户端文件下载请求
+        download_file_json = self.recv_operation(conn)
+        # 向客户端返回文件下载json
+        filename = download_file_json['filename']
+        download_file_abspath = Common.get_abspath(self.curr_path, filename)
+        filesize = os.path.getsize(download_file_abspath)
+        download_json = {'filename': filename, 'size': filesize}
+        logging.debug('服务端要发送的文件信息:%s' % download_json)
+        self.send_operation_status(conn, download_json)
+        # 开始下载文件
+        md5 = hashlib.md5()
+        sended_size = 0  # 客户端已发送的文件大小
+        with open(download_file_abspath, mode='rb') as f:
+            while filesize > 0:
+                content = f.read(2048)
+                filesize -= len(content)
+                sended_size += len(content)
+                conn.send(content)
+                md5.update(content)
+                logging.debug('文件上传进度:%s' %filesize)
+        # 接收客户端发送的md5值，如果md5相同，则下载成功，不同则下载失败
+        md5_value = md5.hexdigest()
+        file_md5_json = self.recv_operation(conn)
+        logging.debug('服务端下载文件任务执行完毕，md5值:%s' % file_md5_json)
+        # 向客户端发送md5校验响应
+        self.operation_status['status_code'] = '207' if md5_value == file_md5_json['md5'] else '208'
+        self.send_operation_status(conn, self.operation_status)
+        logging.debug('服务端下载文件任务执行完毕:%s' % file_md5_json)
+
 
     def recv_operation(self, conn):
         """

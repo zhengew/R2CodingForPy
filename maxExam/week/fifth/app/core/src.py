@@ -190,6 +190,7 @@ class TransmitClient(object):
         upload_json = {'filename': filename, 'size': filesize}
         logging.debug('客户端要发送的文件信息:%s' %upload_json)
         self.send_operation(upload_json)
+        # 开发发送文件
         md5 = hashlib.md5()  # 计算文件md5值
         sended_size = 0 # 客户端已发送的文件大小
         with open(upload_file, mode='rb') as f:
@@ -205,14 +206,13 @@ class TransmitClient(object):
         md5_value = md5.hexdigest()
         file_md5_json = {'filename': filename, 'md5': md5_value}
         self.send_operation(file_md5_json)
-        logging.debug('客户端发送文件完毕:%s' % file_md5_json)
+        logging.debug('客户端发送文件完毕，md5值:%s' % file_md5_json)
         # 接收服务端响应
         status_code = self.recv_operation_status()['status_code']
         if status_code == '205':
             print('文件一致性校验通过，文件上传成功:%s' % filename)
         elif status_code == '206':
             print('文件一致性校验失败，文件上传失败:%s' % filename)
-
 
     def download(self):
         """
@@ -223,6 +223,59 @@ class TransmitClient(object):
         校验文件一致性
         :return:
         """
+        # 接收服务端当前路径的可下载文件
+        download_files = self.recv_operation_status()
+        for id, file in enumerate(download_files['data'], 1):
+            print('%s: %s' % (id, file))
+        # 校验输入合法性
+        while True:
+            file_id = input('请选择要下载的文件id:').strip()
+            if re.findall('[^\d]', file_id) or int(file_id) < 1 or int(file_id) > len(download_files['data']):
+                print('您输入的文件id不存在～')
+            else:
+                break
+        # 请求 json
+        file_id = int(file_id) - 1
+        filename = download_files['data'][file_id]
+        download_file_json = {'filename': filename}
+        self.send_operation(download_file_json)
+        # 接收服务端下载文件响应json
+        download_json = self.recv_operation_status()
+        filesize = download_json['size']
+        # 用户输入文件下载的绝对路径
+        while True:
+            download_path = input('请输入文件保存路径:').strip()
+            if os.path.exists(download_path) and os.path.isdir(download_path) \
+                    and not re.findall('[^/a-zA-Z\d.\\\\]', download_path):
+                break
+            else:
+                print('您输入的路径不存在或不是一个文件夹目录或路径中包含非大小写字母和数字:%s' %download_path)
+        download_file_abspath = Common.get_abspath(download_path, filename)
+        # 开始下载文件
+        md5 = hashlib.md5()
+        received_size = 0 # 客户端已接受的文件大小
+        with open(download_file_abspath, mode='wb') as f:
+            while filesize > 0:
+                left_size = 2048 if filesize > 2048 else filesize  # 避免与接收md5粘包
+                content = self.sk.recv(left_size)
+                filesize -= len(content)
+                received_size += len(content)
+                f.write(content)
+                md5.update(content)
+                logging.debug('文件下载进度:%s' % received_size)
+        md5_value = md5.hexdigest()
+        # 向服务端发送md5值，如果md5相同，则下载成功，不同则下载失败
+        md5_value = md5.hexdigest()
+        file_md5_json = {'filename': filename, 'md5': md5_value}
+        self.send_operation(file_md5_json)
+        logging.debug('客户端下载文件完毕,md5值:%s' % file_md5_json)
+        # 接收服务端文件一致性响应json
+        status_code = self.recv_operation_status()['status_code']
+        if status_code == '207':
+            print('文件一致性校验通过，文件下载成功:%s' % filename)
+        elif status_code == '208':
+            print('文件一致性校验失败，文件下载失败:%s' % filename)
+
 
 
     def send_operation(self, operation):
@@ -263,6 +316,8 @@ class TransmitClient(object):
                     self.send_operation(operation) # 告诉客户端即将进行的操作
                     return obj()
         except ValueError:
+            print('您选择的功能不存在～')
+        except IndexError:
             print('您选择的功能不存在～')
 
     def login_menus(self):

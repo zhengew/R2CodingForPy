@@ -5,6 +5,7 @@
 
 import hashlib
 import hmac
+import os
 import sys
 
 class Common(object):
@@ -46,6 +47,18 @@ class Common(object):
         sys.stdout.write(r)
         sys.stdout.flush
 
+    @staticmethod
+    def get_abspath(basepath: str, subpath: str):
+        """
+        获取当前路径下某个文件或文件夹的绝对路径
+        :param basepath:
+        :param subpath:
+        :return:
+        """
+        abspath = os.path.join(basepath, subpath)
+        # 如果是文件夹，需要加上分隔符
+        # return abspath if os.path.isfile(abspath) else (abspath + os.sep)
+        return abspath
 if __name__ == '__main__':
     ret = Common.get_pwd_md5('test1', '123456')
     print(ret, len(ret))

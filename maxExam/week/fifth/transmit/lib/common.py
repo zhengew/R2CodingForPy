@@ -47,6 +47,16 @@ class Common(object):
         return sorted(next(os.walk(path))[1], key=lambda i: i.lower())
 
     @staticmethod
+    def get_curr_path_files(path: str):
+        """
+        获取当前路径下的所有文件
+        :param path:
+        :return:
+        """
+        return sorted(next(os.walk(path))[2], key=lambda i: i.lower())
+
+
+    @staticmethod
     def get_user_home_dir(login_user: str):
         """
         当前登录用户的家目录
@@ -72,7 +82,18 @@ class Common(object):
         sys.stdout.write(r)
         sys.stdout.flush
 
-
+    @staticmethod
+    def get_abspath(basepath: str, subpath: str):
+        """
+        获取当前路径下某个文件或文件夹的绝对路径
+        :param basepath:
+        :param subpath:
+        :return:
+        """
+        abspath = os.path.join(basepath, subpath)
+        # 如果是文件夹，需要加上分隔符
+        # return abspath if os.path.isfile(abspath) else (abspath + os.sep)
+        return abspath
 if __name__ == '__main__':
     ret = Common.get_pwd_md5('test1', '123456')
     print(ret, len(ret))
