@@ -32,10 +32,8 @@ class ConfingHandler:
     # 服务端文件根目录
     # '/Users/erwei.zheng/Downloads/home/'
     # '/home/zew/Downloads/home'
-    home_path = r'/home/zew/Downloads/home/' if os_type == 'posix' else r'D:\\home\\'
+    home_path = r'/Users/erwei.zheng/Downloads/home/' if os_type == 'posix' else r'D:\\home\\'
 
 if __name__ == '__main__':
     print(ConfingHandler.base_path)
-    print(ConfingHandler.files_home)
     print(ConfingHandler.files_md5)
-    print(ConfingHandler.osname)

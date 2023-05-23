@@ -1,0 +1,6 @@
+# 数据库相关配置
+MySqlDB:
+  host:
+  user: dev
+  password:
+  db: test_obp_data
